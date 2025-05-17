@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { Play } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -149,9 +150,9 @@ const HeroSection = () => {
               
               <Button
                 asChild
-                variant="outline"
+                variant="default"
                 onClick={scrollToRecipeFilter}
-                className="border-white text-black bg-white/[.05] hover:bg-white/[.15] hover:border-yellow-400 hover:text-yellow-400 font-semibold text-lg px-8 py-6 rounded-full backdrop-blur-sm transition-all duration-300"
+                className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold text-lg px-8 py-6 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300"
               >
                 <motion.button
                   whileHover={{ scale: 1.05, y: -4 }}
