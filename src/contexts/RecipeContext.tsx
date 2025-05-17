@@ -1,69 +1,88 @@
 
-import { createContext, useContext, useState, ReactNode } from 'react';
-import { recipeData } from '../data/recipes';
+import React, { createContext, useState, useContext } from "react";
+import { recipes as initialRecipes } from "../data/recipes";
+import { saveRecipe as saveRecipeService, unsaveRecipe, isRecipeSaved } from "../services/recipeService";
+import { useAuth } from "./AuthContext";
+import { toast } from "sonner";
 
-type Recipe = {
+export interface Recipe {
   id: string;
   title: string;
-  description: string;
-  image: string;
-  cuisineType: string;
-  mealType: string;
-  dietaryRestrictions: string[];
-  cookTime: string;
-  prepTime: string; // Add prepTime property
-  servings: number;
+  description?: string;
   ingredients: string[];
   instructions: string[];
-  nutritionInfo?: {
-    calories: number;
-    protein: string;
-    carbs: string;
-    fat: string;
-    fiber: string;
-  };
-};
+  prepTime?: number;
+  cookTime?: number;
+  servings?: number;
+  image?: string;
+  mealType?: string;
+  cuisine?: string;
+  difficulty?: "easy" | "medium" | "hard";
+  dietary?: string[];
+  calories?: number;
+}
 
-type RecipeContextType = {
+interface RecipeContextType {
   recipes: Recipe[];
   filteredRecipes: Recipe[];
-  filters: {
-    cuisineType: string[];
-    mealType: string[];
-    dietaryRestrictions: string[];
-  };
-  setFilters: (filters: { cuisineType: string[]; mealType: string[]; dietaryRestrictions: string[] }) => void;
-};
+  setFilteredRecipes: React.Dispatch<React.SetStateAction<Recipe[]>>;
+  saveRecipe: (recipe: Recipe) => void;
+  unsaveRecipe: (recipeId: string) => void;
+  isRecipeSaved: (recipeId: string) => boolean;
+}
 
 const RecipeContext = createContext<RecipeContextType | undefined>(undefined);
 
-export const RecipeProvider = ({ children }: { children: ReactNode }) => {
-  const [recipes] = useState<Recipe[]>(recipeData);
+export const useRecipes = () => {
+  const context = useContext(RecipeContext);
+  if (!context) {
+    throw new Error("useRecipes must be used within a RecipeProvider");
+  }
+  return context;
+};
 
-  const [filters, setFilters] = useState({
-    cuisineType: [],
-    mealType: [],
-    dietaryRestrictions: [],
-  });
+export const RecipeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [recipes] = useState<Recipe[]>(initialRecipes);
+  const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>(initialRecipes);
+  const { isAuthenticated } = useAuth();
 
-  const filteredRecipes = recipes.filter(recipe => {
-    if (filters.cuisineType.length > 0 && !filters.cuisineType.includes('all') && !filters.cuisineType.includes(recipe.cuisineType)) return false;
-    if (filters.mealType.length > 0 && !filters.mealType.includes('all') && !filters.mealType.includes(recipe.mealType)) return false;
-    if (filters.dietaryRestrictions.length > 0 && !filters.dietaryRestrictions.includes('all') && !recipe.dietaryRestrictions.some(r => filters.dietaryRestrictions.includes(r))) return false;
-    return true;
-  });
+  const handleSaveRecipe = (recipe: Recipe) => {
+    if (!isAuthenticated) {
+      toast.error("Please login to save recipes");
+      return;
+    }
+    
+    saveRecipeService(recipe);
+    toast.success(`${recipe.title} saved to your collection!`);
+  };
+
+  const handleUnsaveRecipe = (recipeId: string) => {
+    if (!isAuthenticated) {
+      return;
+    }
+    
+    unsaveRecipe(recipeId);
+    toast.success("Recipe removed from your collection");
+  };
+
+  const checkIfRecipeSaved = (recipeId: string) => {
+    return isRecipeSaved(recipeId);
+  };
 
   return (
-    <RecipeContext.Provider value={{ recipes, filteredRecipes, filters, setFilters }}>
+    <RecipeContext.Provider
+      value={{
+        recipes,
+        filteredRecipes,
+        setFilteredRecipes,
+        saveRecipe: handleSaveRecipe,
+        unsaveRecipe: handleUnsaveRecipe,
+        isRecipeSaved: checkIfRecipeSaved,
+      }}
+    >
       {children}
     </RecipeContext.Provider>
   );
 };
 
-export const useRecipes = () => {
-  const context = useContext(RecipeContext);
-  if (context === undefined) {
-    throw new Error('useRecipes must be used within a RecipeProvider');
-  }
-  return context;
-};
+export default RecipeContext;

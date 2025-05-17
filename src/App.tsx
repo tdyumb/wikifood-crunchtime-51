@@ -1,11 +1,14 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { RecipeProvider } from "./contexts/RecipeContext";
+import { AuthProvider } from "./contexts/AuthContext";
 import { useState } from "react";
 import SplashScreen from "./components/SplashScreen";
+import SupportChatbot from "./components/SupportChatbot";
 
 // Pages
 import Home from "./pages/Home";
@@ -30,7 +33,6 @@ function App() {
     setShowSplash(false);
   };
 
-  // No comments here - humans often don't comment simple components
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -39,23 +41,26 @@ function App() {
         {showSplash ? (
           <SplashScreen onComplete={handleSplashComplete} />
         ) : (
-          <RecipeProvider>
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/find-recipe" element={<FindRecipe />} />
-                <Route path="/recipe-collection" element={<RecipeCollection />} />
-                <Route path="/my-saved-recipes" element={<MySavedRecipesPage />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/download" element={<Download />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/newsletter" element={<Newsletter />} />
-                <Route path="/events" element={<Events />} />
-              </Routes>
-            </BrowserRouter>
-          </RecipeProvider>
+          <AuthProvider>
+            <RecipeProvider>
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/find-recipe" element={<FindRecipe />} />
+                  <Route path="/recipe-collection" element={<RecipeCollection />} />
+                  <Route path="/my-saved-recipes" element={<MySavedRecipesPage />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/download" element={<Download />} />
+                  <Route path="/blog" element={<Blog />} />
+                  <Route path="/newsletter" element={<Newsletter />} />
+                  <Route path="/events" element={<Events />} />
+                </Routes>
+                <SupportChatbot />
+              </BrowserRouter>
+            </RecipeProvider>
+          </AuthProvider>
         )}
       </TooltipProvider>
     </QueryClientProvider>

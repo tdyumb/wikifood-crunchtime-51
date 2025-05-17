@@ -1,12 +1,35 @@
 
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const LoginPage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    try {
+      const success = await login(email, password);
+      if (success) {
+        navigate("/my-saved-recipes");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
@@ -18,31 +41,50 @@ const LoginPage = () => {
               Sign in to save your favorite recipes and access your collection.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="you@example.com" />
-            </div>
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" placeholder="••••••••" />
-            </div>
-            {/* Placeholder for actual login functionality */}
-            <p className="text-sm text-center text-muted-foreground pt-2">
-              Login functionality will be enabled after Supabase integration.
-            </p>
-          </CardContent>
-          <CardFooter className="flex flex-col space-y-2">
-            <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white">
-              Login
-            </Button>
-            <p className="text-sm text-center text-muted-foreground">
-              Don't have an account?{" "}
-              <Link to="#" className="font-medium text-orange-600 hover:text-orange-500">
-                Sign up
-              </Link>
-            </p>
-          </CardFooter>
+          <form onSubmit={handleSubmit}>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Input 
+                  id="email" 
+                  type="email" 
+                  placeholder="you@example.com" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="password">Password</Label>
+                <Input 
+                  id="password" 
+                  type="password" 
+                  placeholder="••••••••" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="text-sm text-muted-foreground">
+                <p>For demo purposes, any valid email and password (6+ characters) will work.</p>
+              </div>
+            </CardContent>
+            <CardFooter className="flex flex-col space-y-2">
+              <Button 
+                type="submit" 
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+                disabled={isLoading}
+              >
+                {isLoading ? "Logging in..." : "Login"}
+              </Button>
+              <p className="text-sm text-center text-muted-foreground">
+                Don't have an account?{" "}
+                <Link to="#" className="font-medium text-orange-600 hover:text-orange-500">
+                  Sign up
+                </Link>
+              </p>
+            </CardFooter>
+          </form>
         </Card>
       </div>
     </div>
