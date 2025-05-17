@@ -87,8 +87,9 @@ const HeroSection = () => {
             variants={fadeInUp}
             className="mb-8 px-6 py-3 bg-black/60 text-white rounded-full flex items-center gap-3 mx-auto hover:bg-yellow-500 hover:text-black transition-all duration-300 border border-white/20 backdrop-blur-sm shadow-lg"
             onClick={openVideoTutorial}
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
             <div className="bg-white text-black rounded-full p-1">
               <Play size={16} className="ml-0.5" />
@@ -138,8 +139,9 @@ const HeroSection = () => {
                 className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold text-lg px-8 py-6 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300"
               >
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.05, y: -4 }}
                   whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 15 }}
                 >
                   Find your perfect recipe
                 </motion.button>
@@ -149,11 +151,12 @@ const HeroSection = () => {
                 asChild
                 variant="outline"
                 onClick={scrollToRecipeFilter}
-                className="border-white text-black bg-white/[.05] hover:bg-white/[.10] font-semibold text-lg px-8 py-6 rounded-full backdrop-blur-sm transition-all duration-300"
+                className="border-white text-black bg-white/[.05] hover:bg-white/[.15] hover:border-yellow-400 hover:text-yellow-400 font-semibold text-lg px-8 py-6 rounded-full backdrop-blur-sm transition-all duration-300"
               >
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.05, y: -4 }}
                   whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 15 }}
                 >
                   Explore Categories
                 </motion.button>
