@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
@@ -20,6 +21,9 @@ interface RecipeCardProps {
   ingredients: string[];
   instructions: string[];
   equipment?: string[];
+  difficulty?: "easy" | "medium" | "hard";
+  sweetness?: string[];
+  sourceUrl?: string;
 }
 
 interface NutritionalInfo {
@@ -96,6 +100,10 @@ const RecipeCard = (props: RecipeCardProps) => {
     document.documentElement.classList.toggle("keep-screen-on", !keepScreenOn);
   };
 
+  // Check for sweetness array with fallback
+  const sweetness = props.sweetness || [];
+  const equipment = props.equipment || [];
+
   return (
     <motion.div
       whileHover={{ y: -10 }}
@@ -151,7 +159,7 @@ const RecipeCard = (props: RecipeCardProps) => {
                     </div>
                     <div className="text-center p-3 bg-gray-50 rounded-lg">
                       <p className="text-sm text-gray-600">Difficulty</p>
-                      <p className="font-semibold">{props.difficulty}</p>
+                      <p className="font-semibold">{props.difficulty || 'Medium'}</p>
                     </div>
                     <div className="text-center p-3 bg-gray-50 rounded-lg">
                       <p className="text-sm text-gray-600">Servings</p>
@@ -160,20 +168,22 @@ const RecipeCard = (props: RecipeCardProps) => {
                   </div>
 
                   {/* Equipment Section */}
-                  <div className="bg-amber-50 p-4 rounded-lg">
-                    <h3 className="text-lg font-semibold text-amber-900 mb-2 flex items-center">
-                      <Utensils className="mr-2" size={20} />
-                      Equipment Needed
-                    </h3>
-                    <ul className="grid grid-cols-2 gap-2">
-                      {props.equipment.map((item, index) => (
-                        <li key={index} className="text-amber-800 flex items-center">
-                          <span className="w-2 h-2 bg-amber-500 rounded-full mr-2"></span>
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  {equipment.length > 0 && (
+                    <div className="bg-amber-50 p-4 rounded-lg">
+                      <h3 className="text-lg font-semibold text-amber-900 mb-2 flex items-center">
+                        <Utensils className="mr-2" size={20} />
+                        Equipment Needed
+                      </h3>
+                      <ul className="grid grid-cols-2 gap-2">
+                        {equipment.map((item, index) => (
+                          <li key={index} className="text-amber-800 flex items-center">
+                            <span className="w-2 h-2 bg-amber-500 rounded-full mr-2"></span>
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
                   {/* Nutritional Information */}
                   <div className="bg-blue-50 p-4 rounded-lg">
@@ -202,9 +212,9 @@ const RecipeCard = (props: RecipeCardProps) => {
                     </div>
                   </div>
 
-                  {props.sweetness.length > 0 && (
+                  {sweetness.length > 0 && (
                     <div className="flex gap-2">
-                      {props.sweetness.map((level, index) => (
+                      {sweetness.map((level, index) => (
                         <span 
                           key={index}
                           className="px-3 py-1 bg-pink-100 text-pink-800 rounded-full text-sm"

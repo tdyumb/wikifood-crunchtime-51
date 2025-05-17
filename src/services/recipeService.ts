@@ -1,4 +1,3 @@
-
 import { Recipe } from "@/contexts/RecipeContext";
 
 export interface SavedRecipe extends Recipe {
@@ -10,12 +9,13 @@ export const saveRecipe = (recipe: Recipe): void => {
   
   // Check if recipe already exists
   if (!savedRecipes.some((r) => r.id === recipe.id)) {
-    // Convert number values to strings where needed to ensure consistency
+    // Convert values to strings where needed to ensure consistency
     const recipeToSave: SavedRecipe = {
       ...recipe,
-      prepTime: recipe.prepTime?.toString(),
-      cookTime: recipe.cookTime?.toString(),
-      servings: recipe.servings?.toString(),
+      // Convert to string if it's a number, otherwise keep as is
+      prepTime: recipe.prepTime !== undefined ? recipe.prepTime.toString() : undefined,
+      cookTime: recipe.cookTime !== undefined ? recipe.cookTime.toString() : undefined,
+      servings: recipe.servings !== undefined ? recipe.servings.toString() : undefined,
       savedAt: new Date().toISOString(),
     };
     

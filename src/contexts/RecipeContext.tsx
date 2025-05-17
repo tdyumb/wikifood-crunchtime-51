@@ -11,17 +11,20 @@ export interface Recipe {
   description?: string;
   ingredients: string[];
   instructions: string[];
-  prepTime?: number;
-  cookTime?: number;
-  servings?: number;
+  prepTime?: number | string;
+  cookTime?: number | string;
+  servings?: number | string;
   image?: string;
   mealType?: string;
   cuisine?: string;
   difficulty?: "easy" | "medium" | "hard";
   dietary?: string[];
   calories?: number;
-  cuisineType?: string[];
-  dietaryRestrictions?: string[];
+  cuisineType?: string | string[];
+  dietaryRestrictions?: string | string[];
+  sweetness?: string[];
+  sourceUrl?: string;
+  equipment?: string[];
 }
 
 interface Filters {

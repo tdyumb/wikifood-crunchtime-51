@@ -93,13 +93,29 @@ const Navigation = () => {
     
     // Find matching recipes
     const matchingRecipes = recipes
-      .filter(recipe => 
-        recipe.title.toLowerCase().includes(query) || 
-        recipe.description.toLowerCase().includes(query) ||
-        recipe.cuisineType.toLowerCase().includes(query) ||
-        recipe.mealType.toLowerCase().includes(query) ||
-        recipe.dietaryRestrictions.some(restriction => restriction.toLowerCase().includes(query))
-      )
+      .filter(recipe => {
+        const title = recipe.title.toLowerCase();
+        const description = recipe.description?.toLowerCase() || "";
+        const cuisineType = typeof recipe.cuisineType === 'string' 
+          ? recipe.cuisineType.toLowerCase() 
+          : Array.isArray(recipe.cuisineType) 
+            ? recipe.cuisineType.join(" ").toLowerCase() 
+            : "";
+        const mealType = recipe.mealType?.toLowerCase() || "";
+        const dietaryRestrictions = Array.isArray(recipe.dietaryRestrictions) 
+          ? recipe.dietaryRestrictions.some(restriction => 
+              restriction.toLowerCase().includes(query)
+            )
+          : typeof recipe.dietaryRestrictions === 'string'
+            ? recipe.dietaryRestrictions.toLowerCase().includes(query)
+            : false;
+            
+        return title.includes(query) || 
+               description.includes(query) ||
+               cuisineType.includes(query) ||
+               mealType.includes(query) ||
+               dietaryRestrictions;
+      })
       .map(recipe => ({ id: recipe.id, title: recipe.title }))
       .slice(0, 5); // Limit to 5 suggestions
       
@@ -107,8 +123,8 @@ const Navigation = () => {
     const mealTypes = Array.from(
       new Set(
         recipes
-          .filter(recipe => recipe.mealType.toLowerCase().includes(query))
-          .map(recipe => recipe.mealType)
+          .filter(recipe => recipe.mealType && recipe.mealType.toLowerCase().includes(query))
+          .map(recipe => recipe.mealType || "")
       )
     ).slice(0, 3);
     
@@ -116,8 +132,15 @@ const Navigation = () => {
     const dietaryRestrictions = Array.from(
       new Set(
         recipes
-          .flatMap(recipe => recipe.dietaryRestrictions)
-          .filter(restriction => restriction.toLowerCase().includes(query))
+          .flatMap(recipe => {
+            if (Array.isArray(recipe.dietaryRestrictions)) {
+              return recipe.dietaryRestrictions;
+            } else if (typeof recipe.dietaryRestrictions === 'string') {
+              return [recipe.dietaryRestrictions];
+            }
+            return [];
+          })
+          .filter(restriction => restriction && restriction.toLowerCase().includes(query))
       )
     ).slice(0, 3);
     
@@ -168,19 +191,44 @@ const Navigation = () => {
     if (finalQuery.trim() === "") return;
     
     // Filter recipes by search query
-    const filteredRecipes = recipes.filter(recipe => 
-      recipe.title.toLowerCase().includes(finalQuery.toLowerCase()) ||
-      recipe.description.toLowerCase().includes(finalQuery.toLowerCase()) ||
-      recipe.cuisineType.toLowerCase().includes(finalQuery.toLowerCase()) ||
-      recipe.mealType.toLowerCase().includes(finalQuery.toLowerCase()) ||
-      recipe.dietaryRestrictions.some(restriction => 
-        restriction.toLowerCase().includes(finalQuery.toLowerCase())
-      )
-    );
+    const filteredRecipes = recipes.filter(recipe => {
+      const title = recipe.title.toLowerCase();
+      const description = recipe.description?.toLowerCase() || "";
+      const cuisineType = typeof recipe.cuisineType === 'string'
+        ? recipe.cuisineType.toLowerCase()
+        : Array.isArray(recipe.cuisineType)
+          ? recipe.cuisineType.join(" ").toLowerCase()
+          : "";
+      const mealType = recipe.mealType?.toLowerCase() || "";
+      const dietaryRestrictions = Array.isArray(recipe.dietaryRestrictions)
+        ? recipe.dietaryRestrictions.some(restriction =>
+            restriction.toLowerCase().includes(finalQuery.toLowerCase())
+          )
+        : typeof recipe.dietaryRestrictions === 'string'
+          ? recipe.dietaryRestrictions.toLowerCase().includes(finalQuery.toLowerCase())
+          : false;
+          
+      return title.includes(finalQuery.toLowerCase()) ||
+             description.includes(finalQuery.toLowerCase()) ||
+             cuisineType.includes(finalQuery.toLowerCase()) ||
+             mealType.includes(finalQuery.toLowerCase()) ||
+             dietaryRestrictions;
+    });
     
     // Set filters based on search term
     const uniqueCuisineTypes = Array.from(
-      new Set(filteredRecipes.map(recipe => recipe.cuisineType))
+      new Set(
+        filteredRecipes
+          .map(recipe => {
+            if (typeof recipe.cuisineType === 'string') {
+              return recipe.cuisineType;
+            } else if (Array.isArray(recipe.cuisineType)) {
+              return recipe.cuisineType[0]; // Take first item if it's an array
+            }
+            return "";
+          })
+          .filter(Boolean)
+      )
     );
     
     const isMealType = ["breakfast", "lunch", "dinner", "dessert"].some(
@@ -209,7 +257,7 @@ const Navigation = () => {
       : [];
     
     setFilters({
-      cuisineType: uniqueCuisineTypes.length > 0 ? uniqueCuisineTypes : [],
+      cuisineType: uniqueCuisineTypes,
       mealType: mealTypesFilter,
       dietaryRestrictions: dietaryRestrictionsFilter
     });
