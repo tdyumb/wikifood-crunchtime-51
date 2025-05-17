@@ -1,6 +1,6 @@
 
 import React, { createContext, useState, useContext } from "react";
-import { recipes as initialRecipes } from "../data/recipes";
+import { recipes as initialRecipesData } from "../data/recipes";
 import { saveRecipe as saveRecipeService, unsaveRecipe, isRecipeSaved } from "../services/recipeService";
 import { useAuth } from "./AuthContext";
 import { toast } from "sonner";
@@ -20,6 +20,14 @@ export interface Recipe {
   difficulty?: "easy" | "medium" | "hard";
   dietary?: string[];
   calories?: number;
+  cuisineType?: string[];
+  dietaryRestrictions?: string[];
+}
+
+interface Filters {
+  cuisineType: string[];
+  mealType: string[];
+  dietaryRestrictions: string[];
 }
 
 interface RecipeContextType {
@@ -29,6 +37,8 @@ interface RecipeContextType {
   saveRecipe: (recipe: Recipe) => void;
   unsaveRecipe: (recipeId: string) => void;
   isRecipeSaved: (recipeId: string) => boolean;
+  filters: Filters;
+  setFilters: React.Dispatch<React.SetStateAction<Filters>>;
 }
 
 const RecipeContext = createContext<RecipeContextType | undefined>(undefined);
@@ -42,9 +52,14 @@ export const useRecipes = () => {
 };
 
 export const RecipeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [recipes] = useState<Recipe[]>(initialRecipes);
-  const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>(initialRecipes);
+  const [recipes] = useState<Recipe[]>(initialRecipesData);
+  const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>(initialRecipesData);
   const { isAuthenticated } = useAuth();
+  const [filters, setFilters] = useState<Filters>({
+    cuisineType: [],
+    mealType: [],
+    dietaryRestrictions: []
+  });
 
   const handleSaveRecipe = (recipe: Recipe) => {
     if (!isAuthenticated) {
@@ -78,6 +93,8 @@ export const RecipeProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         saveRecipe: handleSaveRecipe,
         unsaveRecipe: handleUnsaveRecipe,
         isRecipeSaved: checkIfRecipeSaved,
+        filters,
+        setFilters,
       }}
     >
       {children}

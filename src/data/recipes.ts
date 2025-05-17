@@ -1,5 +1,4 @@
-
-export const recipeData = [
+export const recipes = [
   {
     id: '1',
     title: 'Ham and Cheese Omelet',
@@ -566,7 +565,7 @@ export const recipeData = [
     ],
     instructions: [
       'Preheat the oven to 350°F and line a baking sheet with parchment paper. Then set aside.',
-      'In a medium bowl, whisk the ricotta cheese together with the eggs, honey, vanilla extract, lemon zest, lemon juice, and salt until smooth.',
+      'In a medium bowl, whisk the ricotta cheese together with the eggs, honey, vanilla extract, lemon zest, lemon juice, and salt.',
       'Arrange the phyllo cups on the prepared baking sheet and spoon 1 tablespoon of filling into each one.',
       'Bake for 14–15 minutes, or until the filling is heated through and the shells are lightly golden.',
       'Let them cool slightly, then garnish with blueberries and pomegranate seeds if desired. Serve and enjoy!'

@@ -10,8 +10,12 @@ export const saveRecipe = (recipe: Recipe): void => {
   
   // Check if recipe already exists
   if (!savedRecipes.some((r) => r.id === recipe.id)) {
+    // Convert number values to strings where needed to ensure consistency
     const recipeToSave: SavedRecipe = {
       ...recipe,
+      prepTime: recipe.prepTime?.toString(),
+      cookTime: recipe.cookTime?.toString(),
+      servings: recipe.servings?.toString(),
       savedAt: new Date().toISOString(),
     };
     

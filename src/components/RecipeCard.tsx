@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
@@ -13,18 +12,14 @@ import { motion } from "framer-motion";
 interface RecipeCardProps {
   id: string;
   title: string;
-  description: string;
-  image: string;
-  cookTime?: string;
-  prepTime?: string;
-  servings?: number;
-  ingredients?: string[];
-  instructions?: string[];
-  difficulty?: string;
-  yield?: string;
-  sweetness?: string[];
+  description?: string;
+  image?: string;
+  prepTime?: string | number;
+  cookTime?: string | number;
+  servings?: string | number;
+  ingredients: string[];
+  instructions: string[];
   equipment?: string[];
-  sourceUrl?: string;
 }
 
 interface NutritionalInfo {
@@ -35,23 +30,8 @@ interface NutritionalInfo {
   fiber: string;
 }
 
-const RecipeCard = ({ 
-  id,
-  title, 
-  description, 
-  image, 
-  cookTime = "30 mins", 
-  prepTime = "15 mins",
-  servings = 4,
-  ingredients = [],
-  instructions = [],
-  difficulty = "Beginner",
-  yield: recipeYield = "4 servings",
-  sweetness = [],
-  equipment = ["Bowl", "Whisk", "Baking Sheet"],
-  sourceUrl
-}: RecipeCardProps) => {
-  const recipeReviews = reviewsData.filter(review => review.recipeId === id);
+const RecipeCard = (props: RecipeCardProps) => {
+  const recipeReviews = reviewsData.filter(review => review.recipeId === props.id);
   const [keepScreenOn, setKeepScreenOn] = useState(false);
   const { toast } = useToast();
   
@@ -89,12 +69,12 @@ const RecipeCard = ({
     return nutritionalData[recipeId] || defaultInfo;
   };
   
-  const nutritionalInfo = getNutritionalInfo(id);
+  const nutritionalInfo = getNutritionalInfo(props.id);
   
   const handleSaveRecipe = () => {
     toast({
       title: "Recipe Saved!",
-      description: `${title} has been saved to your collection`,
+      description: `${props.title} has been saved to your collection`,
     });
   };
   
@@ -124,20 +104,20 @@ const RecipeCard = ({
     >
       <Card className="w-full hover:shadow-lg transition-shadow overflow-hidden h-full flex flex-col">
         <CardHeader className="p-0">
-          <img src={image} alt={title} className="w-full h-48 object-cover" />
+          <img src={props.image} alt={props.title} className="w-full h-48 object-cover" />
         </CardHeader>
         <CardContent className="p-4 flex flex-col flex-grow">
-          <CardTitle className="text-xl mb-2">{title}</CardTitle>
-          <CardDescription className="mb-4">{description}</CardDescription>
+          <CardTitle className="text-xl mb-2">{props.title}</CardTitle>
+          <CardDescription className="mb-4">{props.description}</CardDescription>
           
           <div className="flex justify-between items-center mb-4 text-sm text-gray-600">
             <div className="flex items-center gap-1">
               <Clock size={16} />
-              <span>{cookTime}</span>
+              <span>{props.cookTime}</span>
             </div>
             <div className="flex items-center gap-1">
               <Users size={16} />
-              <span>{servings} servings</span>
+              <span>{props.servings} servings</span>
             </div>
           </div>
 
@@ -154,28 +134,28 @@ const RecipeCard = ({
               </DialogTrigger>
               <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle className="text-2xl font-bold">{title}</DialogTitle>
+                  <DialogTitle className="text-2xl font-bold">{props.title}</DialogTitle>
                 </DialogHeader>
                 
                 <div className="space-y-6">
-                  <img src={image} alt={title} className="w-full h-64 object-cover rounded-lg" />
+                  <img src={props.image} alt={props.title} className="w-full h-64 object-cover rounded-lg" />
                   
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="text-center p-3 bg-gray-50 rounded-lg">
                       <p className="text-sm text-gray-600">Prep Time</p>
-                      <p className="font-semibold">{prepTime}</p>
+                      <p className="font-semibold">{props.prepTime}</p>
                     </div>
                     <div className="text-center p-3 bg-gray-50 rounded-lg">
                       <p className="text-sm text-gray-600">Cook Time</p>
-                      <p className="font-semibold">{cookTime}</p>
+                      <p className="font-semibold">{props.cookTime}</p>
                     </div>
                     <div className="text-center p-3 bg-gray-50 rounded-lg">
                       <p className="text-sm text-gray-600">Difficulty</p>
-                      <p className="font-semibold">{difficulty}</p>
+                      <p className="font-semibold">{props.difficulty}</p>
                     </div>
                     <div className="text-center p-3 bg-gray-50 rounded-lg">
                       <p className="text-sm text-gray-600">Servings</p>
-                      <p className="font-semibold">{servings}</p>
+                      <p className="font-semibold">{props.servings}</p>
                     </div>
                   </div>
 
@@ -186,7 +166,7 @@ const RecipeCard = ({
                       Equipment Needed
                     </h3>
                     <ul className="grid grid-cols-2 gap-2">
-                      {equipment.map((item, index) => (
+                      {props.equipment.map((item, index) => (
                         <li key={index} className="text-amber-800 flex items-center">
                           <span className="w-2 h-2 bg-amber-500 rounded-full mr-2"></span>
                           {item}
@@ -222,9 +202,9 @@ const RecipeCard = ({
                     </div>
                   </div>
 
-                  {sweetness.length > 0 && (
+                  {props.sweetness.length > 0 && (
                     <div className="flex gap-2">
-                      {sweetness.map((level, index) => (
+                      {props.sweetness.map((level, index) => (
                         <span 
                           key={index}
                           className="px-3 py-1 bg-pink-100 text-pink-800 rounded-full text-sm"
@@ -238,7 +218,7 @@ const RecipeCard = ({
                   <div>
                     <h3 className="text-xl font-semibold mb-3">Ingredients</h3>
                     <ul className="list-disc list-inside space-y-2">
-                      {ingredients.map((ingredient, index) => (
+                      {props.ingredients.map((ingredient, index) => (
                         <li key={index} className="text-gray-700">{ingredient}</li>
                       ))}
                     </ul>
@@ -247,7 +227,7 @@ const RecipeCard = ({
                   <div>
                     <h3 className="text-xl font-semibold mb-3">Steps</h3>
                     <ol className="space-y-4">
-                      {instructions.map((instruction, index) => (
+                      {props.instructions.map((instruction, index) => (
                         <li key={index} className="flex gap-4">
                           <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full font-semibold">
                             {index + 1}
@@ -259,18 +239,18 @@ const RecipeCard = ({
                   </div>
 
                   {/* Source Link Section */}
-                  {sourceUrl && (
+                  {props.sourceUrl && (
                     <div className="pt-4 mt-2 border-t border-gray-200">
                       <div className="flex items-center gap-2 text-gray-600">
                         <ExternalLink size={16} />
                         <span className="text-sm">Recipe Source:</span>
                         <a 
-                          href={sourceUrl} 
+                          href={props.sourceUrl} 
                           className="text-blue-600 hover:underline text-sm"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          {new URL(sourceUrl).hostname.replace('www.', '')}
+                          {new URL(props.sourceUrl).hostname.replace('www.', '')}
                         </a>
                       </div>
                     </div>
@@ -302,7 +282,7 @@ const RecipeCard = ({
 
             <div className="flex gap-2">
               <div className="w-1/2">
-                <ReviewsDialog reviews={recipeReviews} recipeName={title} />
+                <ReviewsDialog reviews={recipeReviews} recipeName={props.title} />
               </div>
               
               <Button 
