@@ -501,13 +501,13 @@ const Navigation = () => {
                       </button>
                     </div>
                   ) : (
-                    <div className="flex items-center space-x-6">
+                    <div className="flex items-center space-x-4 xl:space-x-6"> {/* Adjusted space-x for more items */}
                       {/* Desktop Navigation Links with consistent animations */}
-                      {["Home", "Find A Recipe", "Recipe Collection", "About", "Contact"].map((item, index) => (
+                      {["Home", "Find A Recipe", "Recipe Collection", "My Saved Recipes", "About", "Contact", "Login"].map((item, index) => (
                         <motion.div
                           key={item}
                           animate={{ 
-                            fontSize: scrolled ? "0.875rem" : "1rem"
+                            fontSize: scrolled ? "0.875rem" : "1rem" // text-sm or text-base
                           }}
                           transition={navTransition}
                           className="whitespace-nowrap"
@@ -522,7 +522,12 @@ const Navigation = () => {
                             </Link>
                           ) : (
                             <Link 
-                              to={item === "Home" ? "/" : `/${item.toLowerCase().replace(/\s+/g, '-')}`} 
+                              to={
+                                item === "Home" ? "/" : 
+                                item === "My Saved Recipes" ? "/my-saved-recipes" :
+                                item === "Login" ? "/login" :
+                                `/${item.toLowerCase().replace(/\s+/g, '-')}`
+                              } 
                               className="text-white hover:text-gray-200 transition-colors"
                             >
                               {item}
@@ -644,17 +649,19 @@ const Navigation = () => {
             {isMobile && menuOpen && !showMobileSearch && (
               <div className="bg-[#ff9933] py-4 animate-fade-in rounded-b-lg shadow-lg">
                 <div className="flex flex-col space-y-4">
-                  <Link to="/" className="text-white hover:text-gray-200 px-4 py-2 transition-colors">Home</Link>
+                  <Link to="/" className="text-white hover:text-gray-200 px-4 py-2 transition-colors" onClick={handleMenuToggle}>Home</Link>
                   <Link 
                     to={location.pathname === "/" || location.pathname === "/home" ? "#recipe-filter-section" : "/find-recipe"} 
                     className="text-white hover:text-gray-200 px-4 py-2 transition-colors"
-                    onClick={scrollToRecipeFilter}
+                    onClick={(e) => { scrollToRecipeFilter(e); handleMenuToggle(); }}
                   >
                     Find A Recipe
                   </Link>
-                  <Link to="/recipe-collection" className="text-white hover:text-gray-200 px-4 py-2 transition-colors">Recipe Collection</Link>
-                  <Link to="/about" className="text-white hover:text-gray-200 px-4 py-2 transition-colors">About</Link>
-                  <Link to="/contact" className="text-white hover:text-gray-200 px-4 py-2 transition-colors">Contact</Link>
+                  <Link to="/recipe-collection" className="text-white hover:text-gray-200 px-4 py-2 transition-colors" onClick={handleMenuToggle}>Recipe Collection</Link>
+                  <Link to="/my-saved-recipes" className="text-white hover:text-gray-200 px-4 py-2 transition-colors" onClick={handleMenuToggle}>My Saved Recipes</Link> {/* Added mobile link */}
+                  <Link to="/about" className="text-white hover:text-gray-200 px-4 py-2 transition-colors" onClick={handleMenuToggle}>About</Link>
+                  <Link to="/contact" className="text-white hover:text-gray-200 px-4 py-2 transition-colors" onClick={handleMenuToggle}>Contact</Link>
+                  <Link to="/login" className="text-white hover:text-gray-200 px-4 py-2 transition-colors" onClick={handleMenuToggle}>Login</Link> {/* Added mobile link */}
                 </div>
               </div>
             )}
