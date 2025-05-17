@@ -373,7 +373,7 @@ const Navigation = () => {
                             ref={searchInputRef}
                             type="search"
                             placeholder="Search recipes, meal types, dietary..."
-                            className="pl-10 pr-4 py-2 bg-white/90 border-transparent focus:border-transparent focus:ring-0 rounded-full text-sm w-full h-full"
+                            className="pl-10 pr-4 py-2 bg-white border border-slate-300 focus:border-orange-500 focus:ring-1 focus:ring-orange-400 rounded-full text-sm w-full h-full placeholder:text-slate-400"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                           />
@@ -545,7 +545,7 @@ const Navigation = () => {
                       ref={mobileSearchInputRef}
                       type="search"
                       placeholder="Search recipes, meal types, dietary..."
-                      className="pl-10 pr-4 py-2 bg-white/90 border-transparent focus:border-transparent focus:ring-0 rounded-full text-sm w-full"
+                      className="pl-10 pr-4 py-2 bg-white border border-slate-300 focus:border-orange-500 focus:ring-1 focus:ring-orange-400 rounded-full text-sm w-full placeholder:text-slate-400"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
