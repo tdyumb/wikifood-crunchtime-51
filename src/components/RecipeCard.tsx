@@ -9,6 +9,7 @@ import { reviewsData } from "@/data/reviews";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import { useRecipes } from "@/contexts/RecipeContext"; // Import useRecipes hook
 
 interface RecipeCardProps {
   id: string;
@@ -38,6 +39,10 @@ const RecipeCard = (props: RecipeCardProps) => {
   const recipeReviews = reviewsData.filter(review => review.recipeId === props.id);
   const [keepScreenOn, setKeepScreenOn] = useState(false);
   const { toast } = useToast();
+  const { saveRecipe, unsaveRecipe, isRecipeSaved } = useRecipes(); // Get the recipe functions
+  
+  // Check if recipe is already saved
+  const isSaved = isRecipeSaved(props.id);
   
   // This would come from an API or database in a real app
   const getNutritionalInfo = (recipeId: string): NutritionalInfo => {
@@ -76,10 +81,38 @@ const RecipeCard = (props: RecipeCardProps) => {
   const nutritionalInfo = getNutritionalInfo(props.id);
   
   const handleSaveRecipe = () => {
-    toast({
-      title: "Recipe Saved!",
-      description: `${props.title} has been saved to your collection`,
-    });
+    // If already saved, unsave it
+    if (isSaved) {
+      unsaveRecipe(props.id);
+      toast({
+        title: "Recipe Removed",
+        description: `${props.title} has been removed from your collection`,
+      });
+    } else {
+      // Save the recipe
+      saveRecipe({
+        id: props.id,
+        title: props.title,
+        description: props.description,
+        ingredients: props.ingredients,
+        instructions: props.instructions,
+        prepTime: props.prepTime,
+        cookTime: props.cookTime,
+        servings: props.servings,
+        image: props.image,
+        difficulty: props.difficulty,
+        equipment: props.equipment,
+        sweetness: props.sweetness,
+        sourceUrl: props.sourceUrl,
+        mealType: "", // Required by type but we don't have it here
+        cuisine: "", // Required by type but we don't have it here
+      });
+      
+      toast({
+        title: "Recipe Saved!",
+        description: `${props.title} has been saved to your collection`,
+      });
+    }
   };
   
   const handleToggleScreenOn = () => {
@@ -296,13 +329,13 @@ const RecipeCard = (props: RecipeCardProps) => {
               </div>
               
               <Button 
-                variant="outline" 
+                variant={isSaved ? "default" : "outline"}
                 size="sm" 
-                className="w-1/2"
+                className={`w-1/2 ${isSaved ? "bg-orange-500 hover:bg-orange-600" : ""}`}
                 onClick={handleSaveRecipe}
               >
                 <Save className="mr-1" />
-                Save Recipe
+                {isSaved ? "Saved" : "Save Recipe"}
               </Button>
             </div>
           </div>

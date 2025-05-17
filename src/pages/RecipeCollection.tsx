@@ -30,28 +30,6 @@ const RecipeCollection = () => {
     }
   };
 
-  // Function to get equipment for a recipe based on its ID and meal type
-  const getEquipmentForRecipe = (id: string, mealType: string) => {
-    // Different equipment based on meal type
-    const breakfastEquipment = ["Whisk", "Mixing Bowl", "Spatula", "Frying Pan"];
-    const lunchEquipment = ["Knife", "Cutting Board", "Skillet", "Measuring Cups"];
-    const dinnerEquipment = ["Pot", "Pan", "Colander", "Wooden Spoon"];
-    const dessertEquipment = ["Mixer", "Baking Sheet", "Measuring Spoons", "Oven"];
-    
-    switch(mealType) {
-      case "breakfast":
-        return breakfastEquipment;
-      case "lunch":
-        return lunchEquipment;
-      case "dinner":
-        return dinnerEquipment;
-      case "dessert":
-        return dessertEquipment;
-      default:
-        return ["Bowl", "Whisk", "Baking Sheet", "Measuring Cups"];
-    }
-  };
-
   return (
     <div className="min-h-screen bg-wiki-50">
       <Navigation />
@@ -95,7 +73,10 @@ const RecipeCollection = () => {
                     servings={recipe.servings}
                     ingredients={recipe.ingredients}
                     instructions={recipe.instructions}
-                    equipment={getEquipmentForRecipe(recipe.id, recipe.mealType)}
+                    equipment={recipe.equipment || []}
+                    difficulty={recipe.difficulty}
+                    sweetness={recipe.sweetness}
+                    sourceUrl={recipe.sourceUrl}
                   />
                 </div>
               </motion.div>
