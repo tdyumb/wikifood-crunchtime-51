@@ -1,11 +1,15 @@
 
+import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import { useRecipes } from "@/contexts/RecipeContext";
 import RecipeCard from "@/components/RecipeCard";
 import { motion } from "framer-motion";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 const RecipeCollection = () => {
   const { recipes } = useRecipes();
+  const [selectedRecipe, setSelectedRecipe] = useState<string | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const container = {
     hidden: { opacity: 0 },
@@ -29,6 +33,16 @@ const RecipeCollection = () => {
       }
     }
   };
+
+  const handleRecipeClick = (recipeId: string) => {
+    setSelectedRecipe(recipeId);
+    setDialogOpen(true);
+  };
+
+  // Find the selected recipe details
+  const selectedRecipeDetails = selectedRecipe 
+    ? recipes.find(recipe => recipe.id === selectedRecipe) 
+    : null;
 
   return (
     <div className="min-h-screen bg-wiki-50">
@@ -77,6 +91,7 @@ const RecipeCollection = () => {
                     difficulty={recipe.difficulty}
                     sweetness={recipe.sweetness}
                     sourceUrl={recipe.sourceUrl}
+                    onViewRecipe={() => handleRecipeClick(recipe.id)}
                   />
                 </div>
               </motion.div>
@@ -84,6 +99,32 @@ const RecipeCollection = () => {
           </motion.div>
         </div>
       </div>
+
+      {/* Recipe Dialog */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          {selectedRecipeDetails && (
+            <div className="p-4">
+              <RecipeCard
+                id={selectedRecipeDetails.id}
+                title={selectedRecipeDetails.title}
+                description={selectedRecipeDetails.description}
+                image={selectedRecipeDetails.image}
+                cookTime={selectedRecipeDetails.cookTime}
+                prepTime={selectedRecipeDetails.prepTime}
+                servings={selectedRecipeDetails.servings}
+                ingredients={selectedRecipeDetails.ingredients}
+                instructions={selectedRecipeDetails.instructions}
+                equipment={selectedRecipeDetails.equipment || []}
+                difficulty={selectedRecipeDetails.difficulty}
+                sweetness={selectedRecipeDetails.sweetness}
+                sourceUrl={selectedRecipeDetails.sourceUrl}
+                expanded={true}
+              />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

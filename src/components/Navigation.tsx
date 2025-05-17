@@ -1,14 +1,22 @@
+
 import { Menu, Search, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLocation } from "react-router-dom";
 import { Input } from "./ui/input";
 import { useRecipes } from "@/contexts/RecipeContext";
-import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import RecipeCard from "./RecipeCard";
 import { motion, AnimatePresence } from "framer-motion";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { useAuth } from "@/contexts/AuthContext";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 
 // Less structured component with some inconsistencies
 const Navigation = () => {
@@ -38,6 +46,13 @@ const Navigation = () => {
   const { recipes, setFilters } = useRecipes();
   const searchInputRef = useRef<HTMLInputElement>(null);
   const mobileSearchInputRef = useRef<HTMLInputElement>(null);
+  const { isAuthenticated, user, logout } = useAuth(); // Get auth context
+
+  // Handle logout click
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   // Initial appearance animation for the navigation
   const initialNavVariants = {
@@ -522,6 +537,7 @@ const Navigation = () => {
                   {/* Mobile buttons */}
                   {isMobile ? (
                     <div className="flex items-center space-x-2">
+                      {/* Mobile search toggle button */}
                       {!showMobileSearch ? (
                         <button
                           onClick={handleMobileSearchToggle}
@@ -540,6 +556,29 @@ const Navigation = () => {
                         </button>
                       )}
                       
+                      {/* User avatar for mobile */}
+                      {isAuthenticated ? (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Avatar className="h-9 w-9 border-2 border-white cursor-pointer">
+                              <AvatarFallback className="bg-orange-500 text-white">{user?.name?.charAt(0)?.toUpperCase()}</AvatarFallback>
+                            </Avatar>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => navigate("/my-saved-recipes")}>
+                              My Saved Recipes
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={handleLogout}>
+                              Logout
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      ) : (
+                        <Link to="/login" className="p-2 text-white hover:text-gray-200">
+                          Login
+                        </Link>
+                      )}
+                      
                       <button
                         onClick={handleMenuToggle}
                         className="text-white p-2 hover:bg-[#ff9933]/80 rounded-lg transition-colors"
@@ -549,13 +588,13 @@ const Navigation = () => {
                       </button>
                     </div>
                   ) : (
-                    <div className="flex items-center space-x-4 xl:space-x-6"> {/* Adjusted space-x for more items */}
-                      {/* Desktop Navigation Links with consistent animations */}
-                      {["Home", "Find A Recipe", "Recipe Collection", "My Saved Recipes", "About", "Contact", "Login"].map((item, index) => (
+                    <div className="flex items-center space-x-4 xl:space-x-6">
+                      {/* Desktop Navigation Links */}
+                      {["Home", "Find A Recipe", "Recipe Collection", "My Saved Recipes", "About", "Contact"].map((item, index) => (
                         <motion.div
                           key={item}
                           animate={{ 
-                            fontSize: scrolled ? "0.875rem" : "1rem" // text-sm or text-base
+                            fontSize: scrolled ? "0.875rem" : "1rem"
                           }}
                           transition={navTransition}
                           className="whitespace-nowrap"
@@ -573,7 +612,6 @@ const Navigation = () => {
                               to={
                                 item === "Home" ? "/" : 
                                 item === "My Saved Recipes" ? "/my-saved-recipes" :
-                                item === "Login" ? "/login" :
                                 `/${item.toLowerCase().replace(/\s+/g, '-')}`
                               } 
                               className="text-white hover:text-gray-200 transition-colors"
@@ -583,6 +621,39 @@ const Navigation = () => {
                           )}
                         </motion.div>
                       ))}
+                      
+                      {/* User Authentication */}
+                      {isAuthenticated ? (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Avatar className="h-9 w-9 border-2 border-white cursor-pointer hover:border-gray-200 transition-colors">
+                              <AvatarFallback className="bg-orange-500 text-white">{user?.name?.charAt(0)?.toUpperCase()}</AvatarFallback>
+                            </Avatar>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => navigate("/my-saved-recipes")}>
+                              My Saved Recipes
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={handleLogout}>
+                              Logout
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      ) : (
+                        <motion.div
+                          animate={{ 
+                            fontSize: scrolled ? "0.875rem" : "1rem"
+                          }}
+                          transition={navTransition}
+                        >
+                          <Link 
+                            to="/login" 
+                            className="text-white hover:text-gray-200 transition-colors"
+                          >
+                            Login
+                          </Link>
+                        </motion.div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -706,10 +777,9 @@ const Navigation = () => {
                     Find A Recipe
                   </Link>
                   <Link to="/recipe-collection" className="text-white hover:text-gray-200 px-4 py-2 transition-colors" onClick={handleMenuToggle}>Recipe Collection</Link>
-                  <Link to="/my-saved-recipes" className="text-white hover:text-gray-200 px-4 py-2 transition-colors" onClick={handleMenuToggle}>My Saved Recipes</Link> {/* Added mobile link */}
+                  <Link to="/my-saved-recipes" className="text-white hover:text-gray-200 px-4 py-2 transition-colors" onClick={handleMenuToggle}>My Saved Recipes</Link>
                   <Link to="/about" className="text-white hover:text-gray-200 px-4 py-2 transition-colors" onClick={handleMenuToggle}>About</Link>
                   <Link to="/contact" className="text-white hover:text-gray-200 px-4 py-2 transition-colors" onClick={handleMenuToggle}>Contact</Link>
-                  <Link to="/login" className="text-white hover:text-gray-200 px-4 py-2 transition-colors" onClick={handleMenuToggle}>Login</Link> {/* Added mobile link */}
                 </div>
               </div>
             )}
@@ -743,6 +813,11 @@ const Navigation = () => {
                         servings={selectedRecipe.servings}
                         ingredients={selectedRecipe.ingredients}
                         instructions={selectedRecipe.instructions}
+                        equipment={selectedRecipe.equipment || []}
+                        difficulty={selectedRecipe.difficulty}
+                        sweetness={selectedRecipe.sweetness}
+                        sourceUrl={selectedRecipe.sourceUrl}
+                        expanded={true}
                       />
                     </div>
                   </>
