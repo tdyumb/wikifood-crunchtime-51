@@ -149,7 +149,7 @@ const HeroSection = () => {
                 asChild
                 variant="outline"
                 onClick={scrollToRecipeFilter}
-                className="border-white text-white hover:bg-white/20 font-semibold text-lg px-8 py-6 rounded-full backdrop-blur-sm transition-all duration-300"
+                className="border-white text-black bg-white/[.05] hover:bg-white/[.10] font-semibold text-lg px-8 py-6 rounded-full backdrop-blur-sm transition-all duration-300"
               >
                 <motion.button
                   whileHover={{ scale: 1.05 }}
