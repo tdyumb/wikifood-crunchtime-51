@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { Play } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -133,25 +132,31 @@ const HeroSection = () => {
               variants={fadeInUp}
             >
               <Button 
+                asChild
                 variant="default"
                 onClick={handleFindRecipeClick}
                 className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold text-lg px-8 py-6 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                as={motion.button}
               >
-                Find your perfect recipe
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Find your perfect recipe
+                </motion.button>
               </Button>
               
               <Button
+                asChild
                 variant="outline"
                 onClick={scrollToRecipeFilter}
                 className="border-white text-white hover:bg-white/20 font-semibold text-lg px-8 py-6 rounded-full backdrop-blur-sm transition-all duration-300"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                as={motion.button}
               >
-                Explore Categories
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Explore Categories
+                </motion.button>
               </Button>
             </motion.div>
           </motion.div>
