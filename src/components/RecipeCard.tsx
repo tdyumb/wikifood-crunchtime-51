@@ -21,7 +21,7 @@ interface RecipeCardProps {
   ingredients: string[];
   instructions: string[];
   equipment?: string[];
-  difficulty?: "easy" | "medium" | "hard";
+  difficulty?: string; // Changed from union type to string
   sweetness?: string[];
   sourceUrl?: string;
   expanded?: boolean;
