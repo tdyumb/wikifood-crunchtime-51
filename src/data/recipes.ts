@@ -1,4 +1,5 @@
 
+
 const recipes = [
   {
     id: "1",
@@ -186,7 +187,7 @@ const recipes = [
       "Stir in lime juice and season with salt and pepper."
     ],
     prepTime: 10,
-    cookTime: 5, // Changed from 0 to 5 minutes
+    cookTime: 10, // Changed from 5 to 10 minutes
     servings: 6,
     image: "https://images.unsplash.com/photo-1512621776951-a57141f2e3bb?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     mealType: "Snack",
@@ -521,3 +522,4 @@ const recipes = [
 
 // Export the updated recipes array
 export { recipes };
+
