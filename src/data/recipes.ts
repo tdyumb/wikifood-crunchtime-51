@@ -1,3 +1,4 @@
+
 const recipes = [
   {
     id: "1",
@@ -185,7 +186,7 @@ const recipes = [
       "Stir in lime juice and season with salt and pepper."
     ],
     prepTime: 10,
-    cookTime: 0,
+    cookTime: 5, // Changed from 0 to 5 minutes
     servings: 6,
     image: "https://images.unsplash.com/photo-1512621776951-a57141f2e3bb?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     mealType: "Snack",
@@ -245,7 +246,7 @@ const recipes = [
       "Season with salt and pepper."
     ],
     prepTime: 10,
-    cookTime: 0,
+    cookTime: 5, // Changed from 0 to 5 minutes
     servings: 2,
     image: "https://images.unsplash.com/photo-1627521344550-499065535c43?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     mealType: "Lunch",
@@ -335,7 +336,7 @@ const recipes = [
       "Season with salt and pepper."
     ],
     prepTime: 20,
-    cookTime: 0,
+    cookTime: 15, // Changed from 0 to 15 minutes (for cooking quinoa)
     servings: 4,
     image: "https://images.unsplash.com/photo-1563379091403-2c6336fbaf69?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     mealType: "Lunch",
