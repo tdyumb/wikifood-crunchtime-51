@@ -17,7 +17,8 @@ export interface Recipe {
   image?: string;
   mealType?: string;
   cuisine?: string;
-  difficulty?: "easy" | "medium" | "hard";
+  // Changed from strict union type to string to accommodate all possible values
+  difficulty?: string;
   dietary?: string[];
   calories?: number;
   cuisineType?: string | string[];
