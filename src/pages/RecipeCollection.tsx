@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import { useRecipes } from "@/contexts/RecipeContext";
@@ -87,7 +88,8 @@ const RecipeCollection = () => {
                     ingredients={recipe.ingredients}
                     instructions={recipe.instructions}
                     equipment={recipe.equipment || []}
-                    difficulty={recipe.difficulty}
+                    // Convert difficulty to valid type if it's a string
+                    difficulty={recipe.difficulty as "easy" | "medium" | "hard" | undefined}
                     sweetness={recipe.sweetness}
                     sourceUrl={recipe.sourceUrl}
                     onViewRecipe={() => handleRecipeClick(recipe.id)}
@@ -115,7 +117,7 @@ const RecipeCollection = () => {
                 ingredients={selectedRecipeDetails.ingredients}
                 instructions={selectedRecipeDetails.instructions}
                 equipment={selectedRecipeDetails.equipment || []}
-                difficulty={selectedRecipeDetails.difficulty}
+                difficulty={selectedRecipeDetails.difficulty as "easy" | "medium" | "hard" | undefined}
                 sweetness={selectedRecipeDetails.sweetness}
                 sourceUrl={selectedRecipeDetails.sourceUrl}
                 expanded={true}

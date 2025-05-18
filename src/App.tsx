@@ -23,8 +23,15 @@ import Events from "./pages/Events";
 import LoginPage from "./pages/LoginPage";
 import MySavedRecipesPage from "./pages/MySavedRecipesPage";
 
-// Create query client outside of component - a common human pattern
-const queryClient = new QueryClient();
+// Create query client outside of component - a common pattern
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      retry: 1,
+    },
+  },
+});
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);

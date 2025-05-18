@@ -1,11 +1,13 @@
+
 import Navigation from "@/components/Navigation";
 import RecipeFilter from "@/components/RecipeFilter";
 import RecipeCard from "@/components/RecipeCard";
-import MealTypeFilterBar from "@/components/MealTypeFilterBar"; // Import the new component
+import MealTypeFilterBar from "@/components/MealTypeFilterBar";
 import { useRecipes } from "@/contexts/RecipeContext";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import { useState, useEffect } from "react";
+import { getEquipmentForRecipe } from "@/utils/recipeUtils";
 
 const FindRecipe = () => {
   const { filteredRecipes, filters } = useRecipes();
@@ -16,8 +18,6 @@ const FindRecipe = () => {
     let description = "";
     
     const cuisineTypes = filters.cuisineType.filter(c => c !== "all");
-    // Meal types description will now largely be driven by the new filter bar,
-    // but we can still show it if selected.
     const mealTypes = filters.mealType.filter(m => m !== "all" && m.length > 0); 
     const dietaryRestrictions = filters.dietaryRestrictions.filter(d => d !== "all");
     
@@ -61,32 +61,6 @@ const FindRecipe = () => {
     }
   };
 
-  // Function to get equipment for a recipe based on its meal type
-  const getEquipmentForRecipe = (id: string, mealType: string) => {
-    // Different equipment based on meal type
-    const breakfastEquipment = ["Whisk", "Mixing Bowl", "Spatula", "Frying Pan"];
-    const lunchEquipment = ["Knife", "Cutting Board", "Skillet", "Measuring Cups"];
-    const dinnerEquipment = ["Pot", "Pan", "Colander", "Wooden Spoon"];
-    const dessertEquipment = ["Mixer", "Baking Sheet", "Measuring Spoons", "Oven"];
-    
-    const recipe = filteredRecipes.find(r => r.id === id);
-    if (recipe) {
-      switch(recipe.mealType) {
-        case "breakfast":
-          return breakfastEquipment;
-        case "lunch":
-          return lunchEquipment;
-        case "dinner":
-          return dinnerEquipment;
-        case "dessert":
-          return dessertEquipment;
-        default:
-          return ["Bowl", "Whisk", "Baking Sheet", "Measuring Cups"];
-      }
-    }
-    return ["Bowl", "Whisk", "Baking Sheet", "Measuring Cups"];
-  };
-
   return (
     <div className="min-h-screen bg-wiki-50">
       <Navigation />
@@ -113,7 +87,7 @@ const FindRecipe = () => {
             </motion.div>
           )}
           
-          <MealTypeFilterBar /> {/* Add the new filter bar here */}
+          <MealTypeFilterBar />
           
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -128,7 +102,7 @@ const FindRecipe = () => {
             variants={container}
             initial="hidden"
             animate="show"
-            key={`${filteredRecipes.length}-${JSON.stringify(filters)}`} // Re-animate when recipes or filters change
+            key={`${filteredRecipes.length}-${JSON.stringify(filters)}`}
           >
             {filteredRecipes.length > 0 ? (
               filteredRecipes.map((recipe, index) => (
@@ -144,7 +118,7 @@ const FindRecipe = () => {
                       servings={recipe.servings}
                       ingredients={recipe.ingredients}
                       instructions={recipe.instructions}
-                      equipment={getEquipmentForRecipe(recipe.id, recipe.mealType)}
+                      equipment={getEquipmentForRecipe(recipe.mealType)}
                     />
                   </div>
                 </motion.div>
