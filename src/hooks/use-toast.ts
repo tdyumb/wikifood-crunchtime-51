@@ -1,13 +1,16 @@
 
+import * as React from "react";
 import { toast as sonnerToast } from "sonner";
 import { type ToastProps } from "@/components/ui/toast";
 
-// Create a type for our toast system
-export interface Toast extends ToastProps {
+// Create a type for our toast system that doesn't extend ToastProps to avoid conflicts
+export interface Toast {
   id: string;
   title?: React.ReactNode;
   description?: React.ReactNode;
   action?: React.ReactNode;
+  variant?: "default" | "destructive";
+  duration?: number;
 }
 
 // State for the toast
@@ -33,7 +36,11 @@ export const useToast = () => {
     addToast,
     dismissToast,
     // Add ability to use sonner toast directly
-    sonner: sonnerToast
+    sonner: sonnerToast,
+    // Add direct toast method to match existing API usage
+    toast: (props: Omit<Toast, "id">) => {
+      addToast(props);
+    }
   };
 };
 
@@ -52,6 +59,11 @@ export const toast = {
       },
     };
   },
+  // Simple toast method matching the API used in components
+  default: (props: Omit<Toast, "id">) => {
+    const { addToast } = useToast();
+    addToast(props);
+  },
   // Sonner methods
   success: sonnerToast.success,
   error: sonnerToast.error,
@@ -59,6 +71,3 @@ export const toast = {
   warning: sonnerToast.warning,
   message: sonnerToast
 };
-
-// Add React import needed for useState and useCallback
-import React from "react";
