@@ -1,5 +1,6 @@
 
-import { useToastShadcn, toast } from "@/hooks/use-toast";
+// Re-export from the hooks file - this breaks the circular dependency
+import { useToast, toast } from "@/hooks/use-toast";
 
-// Re-export for backward compatibility
-export { useToastShadcn as useToast, toast };
+export { useToast, toast };
+export type { Toast } from "@/hooks/use-toast";
