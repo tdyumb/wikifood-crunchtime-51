@@ -8,10 +8,12 @@ import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getEquipmentForRecipe } from "@/utils/recipeUtils";
+import { toast } from "@/hooks/use-toast";
 
 const FindRecipe = () => {
   const { filteredRecipes, filters } = useRecipes();
   const [searchDescription, setSearchDescription] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Generate a description based on active filters
   useEffect(() => {
@@ -36,6 +38,16 @@ const FindRecipe = () => {
     }
     
     setSearchDescription(description || null);
+    
+    // Simulate loading state to give feedback to the user
+    if (description) {
+      setIsLoading(true);
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
   }, [filters]);
 
   const container = {
@@ -104,7 +116,17 @@ const FindRecipe = () => {
             animate="show"
             key={`${filteredRecipes.length}-${JSON.stringify(filters)}`}
           >
-            {filteredRecipes.length > 0 ? (
+            {isLoading ? (
+              <motion.div 
+                variants={item} 
+                className="col-span-full text-center py-12"
+              >
+                <div className="flex flex-col items-center justify-center space-y-4">
+                  <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                  <h3 className="text-xl font-medium text-gray-600">Searching recipes...</h3>
+                </div>
+              </motion.div>
+            ) : filteredRecipes.length > 0 ? (
               filteredRecipes.map((recipe, index) => (
                 <motion.div key={recipe.id} variants={item} className="h-full flex">
                   <div className="w-full">

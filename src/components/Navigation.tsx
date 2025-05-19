@@ -1,4 +1,3 @@
-
 import { Menu, Search, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
@@ -286,6 +285,9 @@ const Navigation = () => {
     if (showMobileSearch) {
       setShowMobileSearch(false);
     }
+    
+    // Reset search state
+    setSearchQuery("");
   };
 
   const handleSearchItemSelect = (value: string, type: 'recipe' | 'mealType' | 'dietary') => {
@@ -791,38 +793,31 @@ const Navigation = () => {
       <AnimatePresence>
         {recipeDialogOpen && (
           <Dialog open={recipeDialogOpen} onOpenChange={setRecipeDialogOpen}>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" asChild>
-              <motion.div
-                variants={dialogEnterAnimation}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-              >
-                {selectedRecipe && (
-                  <>
-                    <DialogHeader>
-                      <DialogTitle className="text-2xl font-bold">{selectedRecipe.title}</DialogTitle>
-                    </DialogHeader>
-                    <div className="pt-2">
-                      <RecipeCard
-                        id={selectedRecipe.id}
-                        title={selectedRecipe.title}
-                        description={selectedRecipe.description}
-                        image={selectedRecipe.image}
-                        cookTime={selectedRecipe.cookTime}
-                        servings={selectedRecipe.servings}
-                        ingredients={selectedRecipe.ingredients}
-                        instructions={selectedRecipe.instructions}
-                        equipment={selectedRecipe.equipment || []}
-                        difficulty={selectedRecipe.difficulty}
-                        sweetness={selectedRecipe.sweetness}
-                        sourceUrl={selectedRecipe.sourceUrl}
-                        expanded={true}
-                      />
-                    </div>
-                  </>
-                )}
-              </motion.div>
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+              {selectedRecipe && (
+                <div>
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl font-bold">{selectedRecipe.title}</DialogTitle>
+                  </DialogHeader>
+                  <div className="pt-2">
+                    <RecipeCard
+                      id={selectedRecipe.id}
+                      title={selectedRecipe.title}
+                      description={selectedRecipe.description}
+                      image={selectedRecipe.image}
+                      cookTime={selectedRecipe.cookTime}
+                      servings={selectedRecipe.servings}
+                      ingredients={selectedRecipe.ingredients}
+                      instructions={selectedRecipe.instructions}
+                      equipment={selectedRecipe.equipment || []}
+                      difficulty={selectedRecipe.difficulty}
+                      sweetness={selectedRecipe.sweetness}
+                      sourceUrl={selectedRecipe.sourceUrl}
+                      expanded={true}
+                    />
+                  </div>
+                </div>
+              )}
             </DialogContent>
           </Dialog>
         )}

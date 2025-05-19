@@ -1,6 +1,3 @@
 
-// Re-export from the hooks file - this breaks the circular dependency
-import { useToast, toast, Toast } from "@/hooks/use-toast";
-
-export { useToast, toast };
-export type { Toast };
+// Re-export everything from the hooks folder to avoid circular dependencies
+export * from "@/hooks/use-toast";
