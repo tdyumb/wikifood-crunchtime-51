@@ -4,11 +4,9 @@ import Navigation from "@/components/Navigation";
 import { useRecipes } from "@/contexts/RecipeContext";
 import RecipeCard from "@/components/RecipeCard";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 
 const RecipeCollection = () => {
   const { recipes } = useRecipes();
-  const navigate = useNavigate();
 
   const container = {
     hidden: { opacity: 0 },
@@ -31,10 +29,6 @@ const RecipeCollection = () => {
         damping: 20
       }
     }
-  };
-
-  const handleRecipeClick = (recipeId: string) => {
-    navigate(`/recipe/${recipeId}`);
   };
 
   return (
@@ -84,7 +78,6 @@ const RecipeCollection = () => {
                     difficulty={recipe.difficulty as "easy" | "medium" | "hard" | undefined}
                     sweetness={recipe.sweetness}
                     sourceUrl={recipe.sourceUrl}
-                    onViewRecipe={() => handleRecipeClick(recipe.id)}
                   />
                 </div>
               </motion.div>
