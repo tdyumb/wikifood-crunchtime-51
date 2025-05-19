@@ -13,20 +13,34 @@ const RecipeCollection = () => {
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
+        staggerChildren: 0.12,
+        delayChildren: 0.2
       }
     }
   };
 
   const item = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 30 },
     show: { 
       opacity: 1, 
       y: 0,
       transition: {
         type: "spring",
-        stiffness: 260,
-        damping: 20
+        stiffness: 100,
+        damping: 12,
+        mass: 0.5
+      }
+    }
+  };
+
+  const fadeInUp = {
+    initial: { opacity: 0, y: 30 },
+    animate: { 
+      opacity: 1, 
+      y: 0,
+      transition: { 
+        duration: 0.7, 
+        ease: [0.22, 1, 0.36, 1]  // Custom easing for smooth movement
       }
     }
   };
@@ -38,10 +52,8 @@ const RecipeCollection = () => {
       <div className="pt-24 pb-12 px-4">
         <div className="container mx-auto">
           <motion.h1 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-4xl font-bold text-center mb-8"
+            {...fadeInUp}
+            className="text-4xl font-bold text-center mb-4"
           >
             Recipe Collection
           </motion.h1>
@@ -49,9 +61,15 @@ const RecipeCollection = () => {
           <motion.p 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="text-center text-gray-600 mb-12"
+            transition={{ delay: 0.4, duration: 0.6 }}
+            className="text-center text-gray-600 mb-12 relative"
           >
+            <motion.span
+              initial={{ width: "0%" }}
+              animate={{ width: "100%" }}
+              transition={{ delay: 0.8, duration: 1.2, ease: "easeInOut" }}
+              className="absolute bottom-[-8px] left-0 right-0 mx-auto h-[2px] bg-gradient-to-r from-transparent via-yellow-400 to-transparent w-[80px]"
+            />
             Explore our complete collection of delicious recipes
           </motion.p>
           
@@ -62,7 +80,13 @@ const RecipeCollection = () => {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             {recipes.map((recipe, index) => (
-              <motion.div key={recipe.id} variants={item} custom={index} className="h-full flex">
+              <motion.div 
+                key={recipe.id} 
+                variants={item} 
+                custom={index} 
+                className="h-full flex"
+                whileHover={{ y: -8, transition: { duration: 0.3, ease: "easeOut" } }}
+              >
                 <div className="w-full">
                   <RecipeCard
                     id={recipe.id}
