@@ -8,12 +8,13 @@ import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getEquipmentForRecipe } from "@/utils/recipeUtils";
-import { toast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const FindRecipe = () => {
   const { filteredRecipes, filters } = useRecipes();
   const [searchDescription, setSearchDescription] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   // Generate a description based on active filters
   useEffect(() => {
@@ -49,6 +50,10 @@ const FindRecipe = () => {
       return () => clearTimeout(timer);
     }
   }, [filters]);
+
+  const handleViewRecipe = (recipeId: string) => {
+    navigate(`/recipe/${recipeId}`);
+  };
 
   const container = {
     hidden: { opacity: 0 },
@@ -141,6 +146,7 @@ const FindRecipe = () => {
                       ingredients={recipe.ingredients}
                       instructions={recipe.instructions}
                       equipment={getEquipmentForRecipe(recipe.mealType)}
+                      onViewRecipe={() => handleViewRecipe(recipe.id)}
                     />
                   </div>
                 </motion.div>

@@ -9,6 +9,8 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { useRecipes } from "@/contexts/RecipeContext";
+import { formatImageUrl } from "@/utils/imageUtils";
+import { Link, useNavigate } from "react-router-dom";
 
 interface RecipeCardProps {
   id: string;
@@ -41,6 +43,7 @@ const RecipeCard = (props: RecipeCardProps) => {
   const [keepScreenOn, setKeepScreenOn] = useState(false);
   const { toast } = useToast();
   const { saveRecipe, unsaveRecipe, isRecipeSaved } = useRecipes();
+  const navigate = useNavigate();
   
   // Check if recipe is already saved
   const isSaved = isRecipeSaved(props.id);
@@ -134,15 +137,48 @@ const RecipeCard = (props: RecipeCardProps) => {
     document.documentElement.classList.toggle("keep-screen-on", !keepScreenOn);
   };
 
+  // New function to handle view recipe button click
+  const handleViewRecipe = () => {
+    if (props.onViewRecipe) {
+      // Use custom handler if provided (for dialogs, etc.)
+      props.onViewRecipe();
+    } else {
+      // Navigate to recipe detail page with the recipe id
+      // This creates a recipe detail view with the full expanded recipe
+      navigate(`/recipe/${props.id}`, {
+        state: { recipe: {
+          id: props.id,
+          title: props.title,
+          description: props.description,
+          ingredients: props.ingredients,
+          instructions: props.instructions,
+          prepTime: props.prepTime,
+          cookTime: props.cookTime,
+          servings: props.servings,
+          image: props.image,
+          difficulty: props.difficulty,
+          equipment: props.equipment,
+          sweetness: props.sweetness,
+          sourceUrl: props.sourceUrl,
+          mealType: "",
+          cuisine: "",
+        }}
+      });
+    }
+  };
+
   // Check for sweetness array with fallback
   const sweetness = props.sweetness || [];
   const equipment = props.equipment || [];
+
+  // Format image URL to use the new folder
+  const formattedImageUrl = formatImageUrl(props.image);
 
   // Show expanded view if expanded prop is true
   if (props.expanded) {
     return (
       <div className="space-y-6">
-        <img src={props.image} alt={props.title} className="w-full h-64 object-cover rounded-lg" />
+        <img src={formattedImageUrl} alt={props.title} className="w-full h-64 object-cover rounded-lg" />
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="text-center p-3 bg-gray-50 rounded-lg">
@@ -308,7 +344,7 @@ const RecipeCard = (props: RecipeCardProps) => {
     >
       <Card className="w-full hover:shadow-lg transition-shadow overflow-hidden h-full flex flex-col">
         <CardHeader className="p-0">
-          <img src={props.image} alt={props.title} className="w-full h-48 object-cover" />
+          <img src={formattedImageUrl} alt={props.title} className="w-full h-48 object-cover" />
         </CardHeader>
         <CardContent className="p-4 flex flex-col flex-grow">
           <CardTitle className="text-xl mb-2">{props.title}</CardTitle>
@@ -330,7 +366,7 @@ const RecipeCard = (props: RecipeCardProps) => {
               variant="outline" 
               className="w-full"
               style={{ backgroundColor: "#e3dbd5", borderColor: "#e3dbd5" }}
-              onClick={props.onViewRecipe}
+              onClick={handleViewRecipe}
             >
               View Recipe
             </Button>

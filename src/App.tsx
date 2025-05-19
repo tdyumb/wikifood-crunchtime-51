@@ -6,14 +6,16 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { RecipeProvider } from "./contexts/RecipeContext";
 import { AuthProvider } from "./contexts/AuthContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SplashScreen from "./components/SplashScreen";
 import SupportChatbot from "./components/SupportChatbot";
+import { initializeImageSystem } from "./utils/imageUtils";
 
 // Pages
 import Home from "./pages/Home";
 import FindRecipe from "./pages/FindRecipe";
 import RecipeCollection from "./pages/RecipeCollection";
+import RecipeDetailPage from "./pages/RecipeDetailPage";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Download from "./pages/Download";
@@ -36,6 +38,11 @@ const queryClient = new QueryClient({
 function App() {
   const [showSplash, setShowSplash] = useState(true);
 
+  useEffect(() => {
+    // Initialize the image upload system when the app starts
+    initializeImageSystem();
+  }, []);
+
   const handleSplashComplete = () => {
     setShowSplash(false);
   };
@@ -55,6 +62,7 @@ function App() {
                   <Route path="/" element={<Home />} />
                   <Route path="/find-recipe" element={<FindRecipe />} />
                   <Route path="/recipe-collection" element={<RecipeCollection />} />
+                  <Route path="/recipe/:id" element={<RecipeDetailPage />} />
                   <Route path="/my-saved-recipes" element={<MySavedRecipesPage />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
