@@ -1,15 +1,13 @@
-
 import { motion } from "framer-motion";
 import { Play } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useToast } from "./ui/use-toast";
+import { toast } from "@/components/ui/use-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 
 const HeroSection = () => {
   const [activeText, setActiveText] = useState("Talk");
   const textOptions = ["Talk", "Cook", "Look"];
-  const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,7 +23,7 @@ const HeroSection = () => {
 
   function openVideoTutorial() {
     window.open('https://www.youtube.com/watch?v=_DbRKvi5_OI', '_blank');
-    toast({
+    toast.default({
       title: "Tutorial",
       description: "Opening video tutorial...",
     });
@@ -134,33 +132,29 @@ const HeroSection = () => {
               variants={fadeInUp}
             >
               <Button 
-                asChild
-                variant="default"
                 onClick={handleFindRecipeClick}
                 className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold text-lg px-8 py-6 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300"
               >
-                <motion.button
+                <motion.span
                   whileHover={{ scale: 1.05, y: -4 }}
                   whileTap={{ scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 300, damping: 15 }}
                 >
                   Find your perfect recipe
-                </motion.button>
+                </motion.span>
               </Button>
               
               <Button
-                asChild
-                variant="default"
                 onClick={scrollToRecipeFilter}
                 className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold text-lg px-8 py-6 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300"
               >
-                <motion.button
+                <motion.span
                   whileHover={{ scale: 1.05, y: -4 }}
                   whileTap={{ scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 300, damping: 15 }}
                 >
                   Explore Categories
-                </motion.button>
+                </motion.span>
               </Button>
             </motion.div>
           </motion.div>

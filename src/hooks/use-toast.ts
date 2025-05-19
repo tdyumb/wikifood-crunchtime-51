@@ -1,7 +1,6 @@
 
 import * as React from "react";
 import { toast as sonnerToast } from "sonner";
-import { type ToastProps } from "@/components/ui/toast";
 
 // Create a type for our toast system that doesn't extend ToastProps to avoid conflicts
 export interface Toast {
@@ -48,21 +47,19 @@ export const useToast = () => {
 export const toast = {
   // Original toast methods
   async: (props: Omit<Toast, "id">) => {
-    const { toasts, addToast, dismissToast } = useToast();
-    addToast(props);
-    return {
-      id: toasts[toasts.length - 1]?.id,
-      dismiss: () => dismissToast(toasts[toasts.length - 1]?.id),
-      update: (props: Toast) => {
-        dismissToast(toasts[toasts.length - 1]?.id);
-        addToast(props);
-      },
-    };
+    // We can't use hooks in a standalone function, so we'll use sonnerToast instead
+    return sonnerToast(props.title as string, {
+      description: props.description,
+      duration: props.duration,
+    });
   },
   // Simple toast method matching the API used in components
   default: (props: Omit<Toast, "id">) => {
-    const { addToast } = useToast();
-    addToast(props);
+    // We can't use hooks in a standalone function, so we'll use sonnerToast instead
+    sonnerToast(props.title as string, {
+      description: props.description,
+      duration: props.duration,
+    });
   },
   // Sonner methods
   success: sonnerToast.success,
